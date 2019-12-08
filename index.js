@@ -65,6 +65,11 @@ function finish(){
 		metadata.content.sort((a,b) => (a.fullName+a.id > b.fullName+b.id) ? 1 : ((b.fullName+b.id > a.fullName+a.id) ? -1 : 0))
 	}
 	fs.writeFile('./metadata.json', JSON.stringify(metadataObjects, null, 2), function (err, data){});
+	exec('git add . && git commit -a -m "md-discover" && git push', function(error, stdout, stderr){
+	  if(error) core.setFailed(stderr)
+	  core.debug(stdout)
+	  referencePMD()
+	})
 }
 
 exec('sfdx force:mdapi:describemetadata -u '+orgAlias+' --json', {maxBuffer: 1024 * 1024 * 10}, processDescribeMetadata);
